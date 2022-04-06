@@ -1,24 +1,29 @@
 import express, { Application   } from 'express';
 import morgan from 'morgan';
+import { Routes } from '../routes/index';
 
  export class App {
     app: Application;
 
     constructor(
-       private port?: number | string
+       private port?: number | string,
+       public routePrv: Routes = new Routes()
     ) {
         this.app = express();
         this.settings();
         this.middlewares();
+        this.routes();
     }
 
     private middlewares() {
       this.app.use(morgan('dev'));
       this.app.use(express.json()); //valores tipo JSON
-      this.app.use(express.urlencoded({ extended: false})); //valores formulario
-      
+      this.app.use(express.urlencoded({ extended: false})); //valores formulario    
   }
 
+  private routes() {
+    this.routePrv.clienteRoutes.ruta(this.app);
+}
        
    private settings(){
        this.app.set('port', this.port  ||  3000);
